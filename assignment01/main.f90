@@ -5,14 +5,19 @@ program main
 implicit none
 
 integer :: n
-real A(3,3), B(3,1)
+real, dimension(3,3) :: A
+real, dimension(3,1) :: B
 
 ! matrix to invert
-A(1,:) = [1.0, 2.0, 3.0]
-A(2,:) = [3.0, 2.0, 1.0]
-A(3,:) = [0.0, 1.0, 0.0]
+! A(1,:) = [1.0, 2.0, 3.0]
+! A(2,:) = [3.0, 2.0, 1.0]
+! A(3,:) = [0.0, 1.0, 0.0]
+! B(:,1)= [1.0, 2.0, 3.0]
 
-B(:,1)= [1.0, 2.0, 3.0]
+A(1,:) = [2.0, 5.0, 8.0]
+A(2,:) = [4.0, 2.0, 2.0]
+A(3,:) = [4.0, 1.0, 2.0]
+B(:,1)= [3.0, 9.0, 2.0]
 n = size(B) ! number of rows
 
 print *, A(1,:)
@@ -42,9 +47,6 @@ subroutine gaussj(n, a, b)
 
     forall (i=1:n) row(i) = i
     forall (j=1:n) col(j) = j
-    print *, "row:",row
-    print *, "col:",col
-    print *,
 
     ! ========================================================================
     ! ==========
@@ -58,20 +60,11 @@ subroutine gaussj(n, a, b)
 
         ! find the pivot in the sub-matrix
         pivot = maxloc(abs(A(j:,j:)))
-        print *, "j:",j,"Pivot:",pivot
-        print *,
         ! (pivot, j) is the location of the maximum of the column j
-
-        ! index (pivot, :) with first row
-        ! row([j,pivot(1)]) = row([pivot(1),j])
 
         ! swap rows/columns
         row([j,pivot(1)]) = row([pivot(1),j])
         col([j,pivot(2)]) = col([pivot(2),j])
-
-        print *, "row:", row
-        print *, "col:", col
-        print *,
 
         ! get rid of jth column
         do i = j+1,n
@@ -93,13 +86,12 @@ subroutine gaussj(n, a, b)
         B(row(j),1) = B(j,1)
         B(j,1) = v
 
-        print *, A(1,:)
-        print *, A(2,:)
-        print *, A(3,:)
-        print *,
-        print *, "B outside loop: ", B
-        print *,
     end do ! end of column iteration
+
+    print *, "Before backsub:"
+    do i=1,n
+        print *, A(i,:)
+    enddo
 
     ! ========================================================================
     ! ==========
@@ -116,8 +108,6 @@ subroutine gaussj(n, a, b)
         do j = i+1,n
             subtract_factor = subtract_factor + A(i,j)*B(j,1)
         end do
-
-        print *, "Subtract factor:", subtract_factor
 
         B(i,1) = (B(i,1) - subtract_factor)/A(i,i)
     end do
