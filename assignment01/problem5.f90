@@ -104,7 +104,8 @@ elemental function DChebyshevT(x, n)
 end function DChebyshevT
 
 subroutine ChebGrid(array, n)
-    real, parameter :: PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062 ! yes, this is what you think it is
+    ! yes, this is what you think it is
+    real, parameter :: PI = 3.141592653589793238462643383279502884197169399375 
     real, dimension(n, 1), intent(inout) :: array
     integer, intent(in) :: n
     integer :: i

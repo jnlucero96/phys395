@@ -68,73 +68,75 @@ cat problem3_100n.dat
 
 echo
 
-# echo "Now compiling problem 4 for n = 10..."
-# gfortran problem4.f90 -fdefault-real-8 -O3 -fimplicit-none -Wall -l lapack -o problem4
+echo "Now compiling problem 4 for n = 10..."
+gfortran problem4.f90 -fdefault-real-8 -O3 -fimplicit-none -Wall -l lapack -o problem4
 
-# echo "Compiling problem 4 done. Running problem 4 for n = 10..."
-# ./problem4 > problem4_10n.dat
+echo "Compiling problem 4 done. Running problem 4 for n = 10..."
+./problem4 > problem4_10n.dat
 
-# echo "Running problem 4 for n = 10 finished. Answer acquired is:"
-# cat problem4_10n.dat
+echo "Running problem 4 for n = 10 finished. Answer acquired is:"
+cat problem4_10n.dat
 
-# echo
+echo
 
-# echo "Re-compiling problem 4 for n = 100..."
-# sed -ie "8s/n = 10/n = 100/" problem4.f90
-# rm problem4.f90e
-# gfortran problem4.f90 -fdefault-real-8 -O3 -fimplicit-none -Wall -l lapack -o problem4
+echo "Re-compiling problem 4 for n = 100..."
+sed -ie "8s/n = 10/n = 100/" problem4.f90
+rm problem4.f90e
+gfortran problem4.f90 -fdefault-real-8 -O3 -fimplicit-none -Wall -l lapack -o problem4
 
-# echo "Compiling problem 4 for n = 100 done. Running problem 4 for n = 100..."
-# ./problem4 > problem4_100n.dat
-# # restore the file to its original state after modifying it
-# sed -ie "8s/n = 100/n = 10/" problem4.f90
-# rm problem4.f90e
+echo "Compiling problem 4 for n = 100 done. Running problem 4 for n = 100..."
+./problem4 > problem4_100n.dat
+# restore the file to its original state after modifying it
+sed -ie "8s/n = 100/n = 10/" problem4.f90
+rm problem4.f90e
 
-# echo "Running problem 4 for n = 100 finished. Answer acquired is:"
-# cat problem4_100n.dat
+echo "Running problem 4 for n = 100 finished. Answer acquired is:"
+cat problem4_100n.dat
 
-# echo
+echo
 
-# echo "Now compiling problem 5 for n = 10..."
-# gfortran problem5.f90 -fdefault-real-8 -O3 -fimplicit-none -Wall -l lapack -o problem5
+echo "Now compiling problem 5 for n = 10..."
+gfortran problem5.f90 -fdefault-real-8 -O3 -fimplicit-none -Wall -l lapack -o problem5
 
-# echo "Compiling problem 5 done. Running problem 5 for n = 10..."
-# ./problem5 > problem5_10n.dat
+echo "Compiling problem 5 done. Running problem 5 for n = 10..."
+./problem5 > problem5_10n.dat
 
-# echo "Running problem 5 for n = 10 finished. Answer acquired is:"
-# cat problem5_10n.dat
+echo "Running problem 5 for n = 10 finished. Answer acquired is:"
+cat problem5_10n.dat
 
-# echo
+echo
 
-# echo "Re-compiling problem 5 for n = 100..."
-# sed -ie "8s/n = 10/n = 100/" problem5.f90
-# rm problem5.f90e
-# gfortran problem5.f90 -fdefault-real-8 -O3 -fimplicit-none -Wall -l lapack -o problem5
+echo "Re-compiling problem 5 for n = 100..."
+sed -ie "8s/n = 10/n = 100/" problem5.f90
+rm problem5.f90e
+gfortran problem5.f90 -fdefault-real-8 -O3 -fimplicit-none -Wall -l lapack -o problem5
 
-# echo "Compiling problem 5 for n = 100 done. Running problem 5 for n = 100..."
-# ./problem5 > problem5_100n.dat
-# # restore the file to its original state after modifying it
-# sed -ie "8s/n = 100/n = 10/" problem5.f90
-# rm problem5.f90e
+echo "Compiling problem 5 for n = 100 done. Running problem 5 for n = 100..."
+./problem5 > problem5_100n.dat
+# restore the file to its original state after modifying it
+sed -ie "8s/n = 100/n = 10/" problem5.f90
+rm problem5.f90e
 
-# echo "Running problem 5 for n = 100 finished. Answer acquired is:"
-# cat problem5_100n.dat
+echo "Running problem 5 for n = 100 finished. Answer acquired is:"
+cat problem5_100n.dat
 
-# echo
+echo
 
-# # we are finished with the executables. Delete all of them
-# echo "Done with executables. Removing them from EXISTENCE..."
-# rm problem1 problem2 problem3 problem4 problem5
+# we are finished with the executables. Delete all of them
+echo "Done with executables. Removing them from EXISTENCE..."
+rm problem? 
 
-# echo "Making pretty plots..."
+echo "Making pretty plots..."
 
-# # python pretty_plots.py problem2
-# # python pretty_plots.py problem3
-# # python pretty_plots.py problem4
-# # python pretty_plots.py problem5
+python pretty_plots.py problem2
+python pretty_plots.py problem3
+python pretty_plots.py problem5
 
-# # we are done with the data files. Delete all of them
-# echo "Done with the data files. Removing them from EXISTENCE..."
-# rm *.dat
+# we are done with the data files. Delete all of them
+echo "Done with the data files. Removing them from EXISTENCE..."
+rm *.dat
 
-# echo "Finished executing. Have a great day!"
+echo "Opening all plots..."
+open *.pdf
+
+echo "Finished executing. Have a great day!"

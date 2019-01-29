@@ -16,7 +16,7 @@ real, dimension(n,n) :: basis_matrix2
 real, dimension(n,1) :: f_of_x2 ! arrays that hold x values and f(x) values
 
 ! set up interval, sampled uniformly from [-1.0, 1.0]
-call linspace(x, -1.0, 1.0, n)
+call linspace(x, -1.00, 1.00, n)
 
 do i=1,n
     f_of_x(i,1) = func_of_interest(x(i,1))

@@ -5,7 +5,7 @@ program main
 implicit none
 
 integer :: i, j ! declare iterator variables
-integer, parameter :: n = 10
+integer, parameter :: n = 10, m = 10000
 
 ! declare matrices and arrays to feed into self-made algorithm
 real, dimension(n,n) :: basis_matrix, basis_prime_matrix
@@ -43,9 +43,8 @@ call lsolve(n, basis_matrix2, f_of_x2)
 call gaussj(n, basis_prime_matrix, fprime_of_x)
 call lsolve(n, basis_prime_matrix2, fprime_of_x2)
 
-do i=1,n
-    print *, x(i,1), f_of_x(i,1), f_of_x2(i,1), fprime_of_x(i,1), fprime_of_x2(i,1)
-end do
+call max_f_err(m, f_of_x, n)
+call max_d_err(m, fprime_of_x, n)
 
 contains
 
@@ -117,6 +116,48 @@ subroutine linspace(array, start_point, stop_point, n)
         array(i,1) = start_point + (i-1)*step
     end do
 end subroutine linspace
+
+subroutine max_f_err(m, coeffs_array, n)
+    ! subroutine that measures the error between the estimated function
+    ! and the real function value
+    integer :: i 
+    integer, intent(in) :: m, n
+    real, dimension(n,1), intent(in) :: coeffs_array
+    real, dimension(m,1) :: x, err
+    real, dimension(1) :: q
+
+    err = 0.0
+
+    call linspace(x, -1.00, 1.00, m)
+
+    do i = 1,m
+        err(i,1) = abs(x(i,1) - sum(coeffs_array*ChebyshevT(x(i,1), n)))
+    end do
+
+    q = maxloc(err, 1)
+
+    print *, 'Maximum function error at x =', x(int(q),1)
+end subroutine max_f_err
+
+subroutine max_d_err(m, coeffs_array, n)
+    integer :: i 
+    integer, intent(in) :: m, n
+    real, dimension(n,1), intent(in) :: coeffs_array
+    real, dimension(m,1) :: x, err
+    real, dimension(1) :: q
+
+    err = 0.0
+
+    call linspace(x, -0.99, 0.99, m)
+
+    do i = 1,m
+    err(i,1) = abs(x(i,1) - sum(coeffs_array*DChebyshevT(x(i,1), n)))
+    end do
+
+    q = maxloc(err, 1)
+
+    print *, 'Maximum derivative error at x =', x(int(q),1)
+end subroutine max_d_err
 
 ! solve A.x = B using Gauss-Jordan elimination
 ! A gets destroyed, answer is returned in B
