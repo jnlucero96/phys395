@@ -2,33 +2,39 @@
 ! compile with: gfortran -O3 -fdefault-real-8 gaussj.f90
 
 program main
-! program that solves the matrix equation Ax=b.
-! program outputs data in two columns. First column is the solution from the
-! algorithm I designed. The second column is the solution that is
-! given by the lsolve algorithm from the lapack package. If the algorithm
-! that I coded is correct then it should be the case that they are the same.
 implicit none
 
-integer :: n, i
-real, dimension(3,3) :: A, A2
-real, dimension(3,1) :: B, B2
+integer :: i, j ! declare iterator variables
+integer, parameter :: n = 10
 
-! matrix to invert
-A(1,:) = [1.0, 2.0, 3.0]
-A(2,:) = [3.0, 2.0, 1.0]
-A(3,:) = [0.0, 1.0, 0.0]
-B(:,1)= [1.0, 2.0, 3.0]
-n = size(B) ! number of rows
-A2(1,:) = [1.0, 2.0, 3.0]
-A2(2,:) = [3.0, 2.0, 1.0]
-A2(3,:) = [0.0, 1.0, 0.0]
-B2(:,1)= [1.0, 2.0, 3.0]
+! declare matrices and arrays to feed into self-made algorithm
+real, dimension(n,n) :: basis_prime_matrix
+real, dimension(n,1) :: fprime_of_x
 
-call gaussj(n, A, B)
-call lsolve(n, A2, B2)
+! declare matrices and arrays to feed into lsolve algorithm for benchmarking
+real, dimension(n,n) :: basis_prime_matrix2
+real, dimension(n,1) :: x2, fprime_of_x2
+
+! avoid the edges for the derivatives since it is undefined there
+call linspace(x2, -0.99, 0.99, n)
+
+do j=1,n
+    ! populate arrays
+    fprime_of_x(j,1) = Dfunc_of_interest(x2(j,1))
+    fprime_of_x2(j,1) = Dfunc_of_interest(x2(j,1))
+    do i=1,n
+        ! populate matrices
+        basis_prime_matrix(i,j) = DChebyshevT(x2(i,1),j)
+        basis_prime_matrix2(i,j) = DChebyshevT(x2(i,1),j)
+    end do
+end do
+
+! use gaussj and lsolve to solve for coefficients for the derivative function
+call gaussj(n, basis_prime_matrix, fprime_of_x)
+call lsolve(n, basis_prime_matrix2, fprime_of_x2)
 
 do i=1,n
-    print *, B(i,1), B2(i,1)
+    print *, x2(i,1), fprime_of_x(i,1), fprime_of_x2(i,1)
 end do
 
 contains
@@ -43,7 +49,7 @@ subroutine swap(a,b)
 end subroutine swap
 
 subroutine lsolve(n, A, B)
-    integer n, pivot(n), status; real A(n,n), B(n,1)
+    integer n, pivot(n), status; real A(n,n), B(n)
 
     ! initialize status to all clear
     status = 0
@@ -58,6 +64,49 @@ subroutine lsolve(n, A, B)
     ! abort at first sign of trouble
     if (status /= 0) stop "singular matrix in lsolve()"
 end subroutine
+
+elemental function func_of_interest(x)
+    real :: denominator
+    real :: func_of_interest
+    real, intent(in) :: x
+    denominator = (1.0 + 10.0*x*x)
+    func_of_interest = 1.0/denominator
+end function func_of_interest
+
+elemental function Dfunc_of_interest(x)
+    real :: denominator
+    real :: Dfunc_of_interest
+    real, intent(in) :: x
+    denominator = (1.0 + 10.0*x*x)
+    Dfunc_of_interest = ((-1.0)*20.0*x)/(denominator*denominator)
+end function Dfunc_of_interest
+
+elemental function ChebyshevT(x, n)
+    real :: ChebyshevT
+    real, intent(in) :: x
+    integer, intent(in) :: n
+    ChebyshevT = cos(n*acos(x))
+end function ChebyshevT
+
+elemental function DChebyshevT(x, n)
+    real :: DChebyshevT
+    real, intent(in) :: x
+    integer, intent(in) :: n
+    DChebyshevT = n*sin(n*acos(x)) / sqrt(1-x*x)
+end function DChebyshevT
+
+subroutine linspace(array, start_point, stop_point, n)
+    real, dimension(n, 1), intent(inout) :: array
+    real, intent(in) :: start_point, stop_point
+    real :: step
+    integer, intent(in) :: n
+    integer :: i
+    ! set up interval, sampled uniformly from [-1.0, 1.0]
+    step = (stop_point-start_point) / (n-1.0)
+    do i=1,n
+        array(i,1) = start_point + (i-1)*step
+    end do
+end subroutine linspace
 
 ! solve A.x = B using Gauss-Jordan elimination
 ! A gets destroyed, answer is returned in B
