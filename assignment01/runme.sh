@@ -136,7 +136,4 @@ python pretty_plots.py problem5
 echo "Done with the data files. Removing them from EXISTENCE..."
 rm *.dat
 
-echo "Opening all plots..."
-open *.pdf
-
 echo "Finished executing. Have a great day!"
