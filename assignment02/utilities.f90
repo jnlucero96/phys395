@@ -137,10 +137,49 @@ end subroutine svdsolve_with_vals
 ! ============================================================================
 ! ==============
 ! ==============
+! ============== TEMPLATES 
+! ==============
+! ==============
+! ============================================================================
+
+! basis functions we are fitting
+! subroutine evalb(x, n, B)
+!     integer, intent(in) :: n
+!     real, intent(in) :: x
+!     real, dimension(n), intent(inout) :: B
+!     integer :: i
+
+!     forall (i=1:n) B(i) = cos(2*PI*x*i) ! set basis function here
+! end subroutine evalb
+
+! evaluate polynomial expansion
+! TEMPLATE FOR DUMPING FIT FUNCTIONS
+! subroutine dump_expression(n, x_min, x_max, m, U)
+!     integer, intent(in) :: n
+!     integer, intent(in) :: m
+!     real, intent(in) :: x_min, x_max
+!     real, dimension(n) :: U
+!     real, dimension(m) :: x_pts
+!     real, dimension(n) :: basis
+!     integer :: i
+
+!     call linspace(x_pts, x_min, x_max, m)
+
+!     do i = 1,m
+!         basis = 0.0
+!         call evalb(x_pts(i), n, basis)
+!         write (*,*) x_pts(i), sum(U*basis)
+!     end do
+! end subroutine dump_expression
+
+! ============================================================================
+! ==============
+! ==============
 ! ============== SELF MADE MODULES
 ! ==============
 ! ==============
 ! ============================================================================
+
 
 elemental function ChebyshevT(x, n)
     real :: ChebyshevT
@@ -178,19 +217,6 @@ subroutine swap(a,b)
     b=dummy
 end subroutine swap
 
-! evaluate expansion
-subroutine dump(n, m, x, v, basis)
-    integer, intent(in) :: n
-    integer, intent(in) :: m
-    real, dimension(m), intent(in) :: x
-    real, dimension(n), intent(in) :: v
-    real, dimension(n,m), intent(in) :: basis 
-    integer :: i
-    
-    do i = 1,m
-        write (*,*) x(i), sum(v*basis(:,i))
-    end do
-end subroutine
 
 subroutine gaussj(n, a, b)
     ! Gauss-Jordan integrator

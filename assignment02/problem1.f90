@@ -7,9 +7,11 @@ use utilities ! call the module
 implicit none
 
 ! number of basis functions
-integer, parameter :: n = 5
+integer, parameter :: n = 3
 
-real x, y, A(n,n), B(n), U(n)
+real :: x, y 
+real, dimension(n,n) :: A 
+real, dimension(n) :: B, U
 
 integer i, j
 integer :: status = 0
@@ -31,7 +33,6 @@ do while (status == 0)
 end do
 
 ! solve for best fit parameters
-!call lsolve(n, A, U)
 call svdsolve(n, A, U, 1.0e-6)  
 
 ! output best fit parameters
@@ -43,14 +44,11 @@ contains
 
 ! basis functions we are fitting
 subroutine evalb(x, n, B)
+    real, intent(in) ::  x
     integer, intent(in) :: n
-    real x, B(n)
-    integer, dimension(n) :: alpha 
+    real, dimension(n) :: B
 
-    forall (i=1:n) alpha(i) = i-1
-
-    B = cos(2*PI*x*alpha)
-
+    forall (i=1:n) B(i) = cos(2*PI*x*(i-1))
 end subroutine
 
 end program problem1
