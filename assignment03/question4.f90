@@ -134,7 +134,7 @@ end function f
 function Jacobian(n, m, c, basis_matrix)
     integer, intent(in) :: n, m
     real, dimension(n, m), intent(in) :: basis_matrix
-    real, dimension(m), intent(in) :: c
+    real, dimension(m+1), intent(in) :: c
     real, dimension(n, m+1) :: Jacobian
     real, dimension(n) :: temp
 
@@ -143,7 +143,7 @@ function Jacobian(n, m, c, basis_matrix)
     do j=1,m
         temp = matmul(basis_matrix, c)
         ! write (*,*) temp
-        Jacobian(:,j) = basis_matrix(:,j)*exp(matmul(basis_matrix,c))
+        Jacobian(:,j) = basis_matrix(:,j)*exp(matmul(basis_matrix,c(:m)))
     end do
     Jacobian(:,m+1) = 1.0
 end function Jacobian
