@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function fbuild () {
-    gfortran -llapack -fdefault-real-8 -Ofast -fimplicit-none -Wall -L/usr/local/Cellar/cfitsio/3.450_1/lib -lcfitsio -lcurl $@
+    gfortran -llapack -fdefault-real-8 -Ofast -fimplicit-none -lcfitsio $@
 }
 
 echo "Hello. Beginning production run of Assignment 04."
@@ -24,17 +24,20 @@ echo "Now compiling problem 2 ..."
 fbuild -o p2 problem2.f90
 
 echo "Compiling problem 2 done. Running problem 2..."
-./p2 > DATA
+./p2 > problem2.dat
+
+echo "Making plots..."
+python plot.py problem2.dat 2
 
 echo
 
 echo "Now compiling problem 3..."
 fbuild -o p3 problem3.f90
 
-echo "Compiling problem 4 done. Running problem 5..."
+echo "Compiling problem 3 done. Running problem 3..."
 ./p3 > problem3.dat
 
-echo "Running problem 4 finished. Answer acquired is:"
+echo "Running problem 3 finished. Answer acquired is:"
 cat problem3.dat
 
 echo "Making plots..."
