@@ -74,21 +74,29 @@ def question1(data_file):
 def question2(data_file):
 
 	# load trajectory data
-	t, energy_deviation = np.loadtxt(data_file, usecols=(0,3), unpack=True)
+	t, pend2_traj, energy_deviation = np.loadtxt(
+		data_file, usecols=(0,2,3), unpack=True
+		)
 
 	# create the figure
-	fig = figure(figsize=(10,8), frameon=False)
-	ax = plt.gca()
+	fig, ax = subplots(2, 1, figsize=(10,8), sharex=True)
 
 	# plot image data
-	im = ax.plot(t, energy_deviation, lw=3.0)
+	ax[0].plot(t, pend2_traj, lw=3.0)
+	ax[0].tick_params(labelsize=18)
+	ax[0].set_ylabel("Pend. 2 Pos.", fontsize=20)
 
-	ax.tick_params(labelsize=18)
-	ax.yaxis.offsetText.set_fontsize(18)
-	ax.yaxis.get_major_formatter().set_powerlimits((0,0))
-	ax.set_ylabel("Energy deviation", fontsize=20)
-	ax.set_xlabel("Time", fontsize=20)
+	ax[1].plot(t, energy_deviation, lw=3.0)
+	ax[1].tick_params(labelsize=18)
+	ax[1].yaxis.offsetText.set_fontsize(18)
+	ax[1].yaxis.get_major_formatter().set_powerlimits((0,0))
+	ax[1].set_ylabel("Energy deviation", fontsize=20)
+	ax[1].set_xlabel("Time", fontsize=20)
 
+	for i in range(2):
+		ax[i].set_xlim([t.min(), t.max()])
+
+	fig.tight_layout()
 	fig.savefig("question2.pdf")
 
 def question3(data_file):
