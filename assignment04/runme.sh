@@ -47,11 +47,11 @@ echo
 
 # we are finished with the executables. Delete all of them
 echo "Done with executables. Removing them from EXISTENCE..."
-rm problem? *.o
+rm p?
 
 # we are done with the data files. Delete all of them
 echo "Done with the data files. Removing them from EXISTENCE..."
-rm *.dat
+rm *.dat *.fit
 
 echo "Finished executing..."
 
