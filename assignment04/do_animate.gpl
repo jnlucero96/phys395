@@ -1,0 +1,5 @@
+set xrange [-2*pi:2*pi]
+set yrange [-2*pi:2*pi]
+frame=0
+plot "fort.11" index frame
+load "animate.gpl"
