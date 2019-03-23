@@ -56,16 +56,12 @@ def question1(data_file):
 	im = imshow(
 		data,
 		extent=(x[0],x[-1],y[0],y[-1]), origin='lower',
-		aspect=(osx*dx)/(osy*dy), cmap=cm.get_cmap('afmhot'), interpolation='none',
+		aspect=(osx*dx)/(osy*dy), cmap=cm.get_cmap('coolwarm'), 
+		interpolation='none',
 		vmin=-abs_data_max, vmax=abs_data_max # make the bounds symmetric
 		)
 
-	# plot contours
-	#contour(X, Y, data, 32, cmap=cm.jet)
-
 	# make colorbar match the plot
-	# divider = make_axes_locatable(plt.gca())
-	# cax = divider.append_axes("right", size="5%", pad=0.07)
 	cax = plt.gca()
 	fig.colorbar(im, ax=cax)
 
@@ -141,12 +137,7 @@ def question3(data_file):
 		vmin=0.0, vmax=abs_data_max
 		)
 
-	# plot contours
-	#contour(X, Y, data, 32, cmap=cm.jet)
-
 	# make colorbar match the plot
-	# divider = make_axes_locatable(plt.gca())
-	# cax = divider.append_axes("right", size="5%", pad=0.07)
 	cax = plt.gca()
 	cax.grid(True)
 	fig.colorbar(im, ax=cax)

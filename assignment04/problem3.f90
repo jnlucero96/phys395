@@ -23,10 +23,29 @@ real dt
 
 allocate(data(1,nx,ny))
 
-x_lower = -PI/2.001
-x_upper = PI/2.001
-y_lower = -PI/2.001
-y_upper = PI/2.001
+! most zoomed out limits
+! x_lower = -PI/2.001
+! x_upper = PI/2.001
+! y_lower = -PI/2.001
+! y_upper = PI/2.001
+
+! zoom 1 bounds
+!x_lower = 1.0
+!x_upper = 1.5
+!y_lower = 1.0
+!y_upper = 1.5
+
+! zoom 2 bounds
+x_lower = 1.3
+x_upper = 1.4
+y_lower = 1.3
+y_upper = 1.4
+
+! zoom 3 bounds
+x_lower = 1.32
+x_upper = 1.34
+y_lower = 1.34
+y_upper = 1.36
 
 xx(:) = [x_lower, x_upper]
 yy(:) = [y_lower, y_upper]
