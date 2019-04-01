@@ -8,7 +8,7 @@ integer, parameter :: n = 200
 real, parameter :: ell = 1.0
 
 ! which potential to use. 0 is quadratic, 1 is quartic.
-integer, parameter :: option = 1
+integer, parameter :: option = 0
 
 ! this is what you think it is...
 real, parameter :: pi = 3.1415926535897932384626433832795028842Q0
@@ -23,8 +23,9 @@ real, dimension(n) :: eig_vals_out
 real, dimension(n,n) :: eig_vecs_out
 
 integer i, ii, jj
-! real, dimension(n) :: results, results_sorted
-! real, dimension(10) :: lowest_eigvals
+integer file_out_index
+
+file_out_index = 3
 
 ! initialize spectral operators
 call initg(); call initl()
@@ -35,7 +36,7 @@ H = -L/2.0; forall (i=1:n) H(i,i) = -L(i,i)/2.0 + V(x(i), option)
 call lsolve(eig_vals_out, eig_vecs_out)
 
 do ii=1,10
-    write(2,*) eig_vals_out(ii)
+    write(file_out_index,*) eig_vals_out(ii)
     do jj=1,n
         write(*,*) x(jj), eig_vecs_out(jj, ii), eig_vecs_out(jj,ii)**2
     end do
@@ -52,7 +53,7 @@ contains
 elemental function V(x, option); intent(in) x, option
     real V, x
     integer option
-    
+
     if (option==0) then
         V = 0.5*(x*x)
     else
@@ -68,7 +69,7 @@ end function
 ! initialize the collocation grid
 subroutine initg()
     integer i
-    
+
     forall (i=1:n) theta(i) = pi*(n-i+0.5)/n; x = ell/tan(theta)
 end subroutine
 
@@ -76,7 +77,7 @@ end subroutine
 subroutine evalb(n, pts, theta, Tn, Tnx, Tnxx)
         integer n, pts; real, dimension(pts), intent(in) :: theta
         real, dimension(pts), intent(out), optional :: Tn, Tnx, Tnxx
-        
+
         ! Chebyshev basis and its derivatives
         if (present(Tn))   Tn = cos(n*theta)
         if (present(Tnx))  Tnx = n * sin(n*theta) * sin(theta)**2/ell
@@ -86,27 +87,27 @@ end subroutine evalb
 ! initialize linear spectral derivative operator
 subroutine initl()
     integer i, pivot(n), status; real A(n,n), B(n,n)
-    
+
     ! evaluate basis and differential operator values on collocation grid
     do i = 1,n
         call evalb(i-1, n, theta, Tn=A(i,:), Tnxx=B(i,:))
     end do
-    
+
         ! find linear operator matrix
         status = 0; select case (kind(A))
                 case(4); call sgesv(n, n, A, n, pivot, B, n, status)
                 case(8); call dgesv(n, n, A, n, pivot, B, n, status)
                 case default; call abort
         end select
-        
+
         ! bail at first sign of trouble
         if (status /= 0) call abort
-        
+
         L = transpose(B)
 end subroutine
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Rayleigh itertation solver
+! MODIFIED Rayleigh itertation solver
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ! Rayleigh's iteration solving eigenvalue problem:
@@ -116,38 +117,25 @@ subroutine lsolve(eig_vals, eig_vecs)
     ! initialize arrays needed for intrinsic lapack function
     real A(n,n), wr(n), wi(n), vl(n,n), vr(n,n), work(4*n)
     integer status
-    
+
     A = H
-    
+
     ! find linear operator matrix
     status = 0; select case (kind(A))
             case(4); call sgeev('N','V',n,A,n,wr,wi,vl,1,vr,n,work,4*n,status)
             case(8); call dgeev('N','V',n,A,n,wr,wi,vl,1,vr,n,work,4*n,status)
             case default; call abort
     end select
-    
+
     ! bail at first sign of trouble
     if (status /= 0) call abort
-    
+
     ! sort the results according to eigenvalues
     call quicksort(wr, vr, 1, n)
 
     eig_vals = wr
     eig_vecs = vr
 end subroutine lsolve
-
-! ! dump the solution and its residual
-! subroutine dump(psi)
-!     real psi(n), delta(n); integer i
-    
-!     delta = matmul(H,psi) - lambda*psi
-    
-!     do i = 1,n
-!         write (*,'(3g24.16)') x(i), psi(i), delta(i)
-!     end do
-    
-!     write (*,*) ""; write (*,*) ""
-! end subroutine
 
 recursive subroutine quicksort(a, eig_vecs, first, last)
   implicit none

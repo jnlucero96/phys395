@@ -12,7 +12,7 @@ real, parameter :: dx = 6.2831853071795864769252867665590057684Q0/2**9
 integer, parameter :: option = 0
 
 ! declare initial guess for the wave function
-real, dimension(3) :: init=[0.0, 0.0, 1.0]
+real, dimension(3) :: init=[0.0, 1.0, 0.0]
 
 ! declare iterator variable
 integer ii
@@ -75,7 +75,7 @@ pure function V(x, option); intent(in) x, option
 
     if (option==0) then
         V = 0.5*(x*x)
-    else 
+    else
         V = 0.25*(x**4.0)
     end if
 

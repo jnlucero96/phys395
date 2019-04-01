@@ -3,22 +3,26 @@ implicit none
 
 ! iterations for bisection cycle
 integer, parameter :: iterations = 1000
-real, parameter :: E = 0.6 
+real, parameter :: E = 0.6
 real, parameter :: tar = 0.0
 ! direction to shoot
 real, parameter :: neg = 1.0
 
-real fa, fb, fc, fd
-! real fa, fb
-integer i
+real fa
+real psi_init, psiPrime_init
+integer file_index_to_write
+
+psi_init = 1.0
+psiPrime_init = 0.0
+file_index_to_write = 1
 
 ! write out the postive trajectory
-fb = integrate(2, 1.0, 0.0, 4.0, 1e-3, neg)
+fa = integrate(file_index_to_write, psi_init, psiPrime_init, 4.0, 1e-3, neg)
 
 contains
 
 ! potential
-pure function V(x); intent(in) x 
+pure function V(x); intent(in) x
     real V, x
 
     V = 0.5*(x*x)
@@ -80,7 +84,7 @@ function integrate(file_index, psi_guess, psi_prime_guess, t, dt, neg)
     real u(3); integer i, n, file_index
 
     ! vector holds [x, psi, psi prime] initial guess
-    u = [0.0, psi_guess, psi_prime_guess]; 
+    u = [0.0, psi_guess, psi_prime_guess];
 
     ! number of time steps needed
     n = floor(t/dt)
@@ -96,13 +100,4 @@ function integrate(file_index, psi_guess, psi_prime_guess, t, dt, neg)
     integrate = u(2)
 end function
 
-! function to find a root of...
-function f(file_index, x, xprime, tar, neg); intent(in) file_index, x, xprime, tar, neg
-    real f, x, xprime, tar, neg
-    integer file_index
-
-    f = integrate(file_index, x, xprime, 10.0, 0.01, neg) - tar
-end function
-
 end program problem1
-
