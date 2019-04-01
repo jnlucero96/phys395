@@ -18,9 +18,12 @@ echo "Plotting..."
 gnuplot --persist << EOF
 set title "Odd Wavefunction (+ x-axis) Harmonic Oscillator"
 set xrange [0:5]
+set terminal pdf
 set output "q1_odd_function.pdf"
 plot "fort.1" u 1:2 w l
 EOF
+
+echo ""
 
 echo "Part B: odd function"
 echo "Recompiling..."
@@ -39,6 +42,7 @@ echo "Plotting..."
 gnuplot --persist << EOF
 set title "Even Wavefunction (+ x-axis) Harmonic Oscillator"
 set xrange [0:5]
+set terminal pdf
 set output "q1_even_function.pdf"
 plot "fort.2" u 1:2 w l
 EOF
@@ -77,7 +81,7 @@ fbuild -o p3 problem2.f90
 echo "Running..."
 ./p3 > q3_output.dat
 echo "First 10 Energy Eigenvalues of Quartic Oscillator are:"
-cat q2_output.dat
+cat q3_output.dat
 
 echo "Cleaning up..."
 
@@ -96,16 +100,22 @@ echo "First 10 Energy Eigenvalues of Harmonic Oscillator are:"
 cat fort.3
 echo "Plotting the energy eigenvectors..."
 gnuplot --persist << EOF
+reset
+unset key
 set title "Eigenstates of the Harmonic Oscillator"
 set xrange [-6:6]
+set terminal pdf
 set output "q4_wavefunctions_figure.pdf"
 plot for [ii=0:9] "q4_output.dat" index ii u 1:2 w l
 EOF
 
 echo "Plotting the probability distributions..."
 gnuplot --persist << EOF
+reset
+unset key
 set title "Probability Density of the Harmonic Oscillator"
 set xrange [-6:6]
+set terminal pdf
 set output "q4_densities_figure.pdf"
 plot for [ii=0:9] "q4_output.dat" index ii u 1:3 w l
 EOF
@@ -128,16 +138,25 @@ echo "First 10 Energy Eigenvalues of Quartic Oscillator are:"
 cat fort.4
 echo "Plotting the energy eigenvectors..."
 gnuplot --persist << EOF
+reset
 set title "Eigenstates of the Quartic Oscillator"
+set xlabel "x"
+unset key
 set xrange [-6:6]
+set terminal pdf
 set output "q5_wavefunctions_figure.pdf"
 plot for [ii=0:9] "q5_output.dat" index ii u 1:2 w l
 EOF
 
 echo "Plotting the probability distributions..."
 gnuplot --persist << EOF
+reset
 set title "Probability Density of the Quartic Oscillator"
+set xlabel "x"
+set ylabel "P(x)"
+unset key
 set xrange [-6:6]
+set terminal pdf
 set output "q5_densities_figure.pdf"
 plot for [ii=0:9] "q5_output.dat" index ii u 1:3 w l
 EOF
@@ -152,6 +171,6 @@ echo "Finished..."
 echo "====== Problem 5 END ======"
 
 echo "Removing extraneous files FROM EXISTENCE..."
-rm p? p_? *.dat fort.?
+rm p? p1_? *.dat fort.?
 
 echo "Done. Have a nice day!"

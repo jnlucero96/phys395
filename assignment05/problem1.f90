@@ -17,7 +17,7 @@ psiPrime_init = 0.0
 file_index_to_write = 1
 
 ! write out the postive trajectory
-fa = integrate(file_index_to_write, psi_init, psiPrime_init, 4.0, 1e-3, neg)
+fa = integrate(file_index_to_write, psi_init, psiPrime_init, 3.0, 1e-3, neg)
 
 contains
 

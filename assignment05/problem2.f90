@@ -10,16 +10,25 @@ real, parameter :: neg = 1.0
 real, parameter :: dx = 6.2831853071795864769252867665590057684Q0/2**9
 ! declare which potential to use. 0 for quadratic, 1 for quartic
 integer, parameter :: option = 0
+real, parameter :: sep = 1.0
 
 ! declare initial guess for the wave function
 real, dimension(3) :: init=[0.0, 1.0, 0.0]
 
-! declare iterator variable
+! declare iterator variables
 integer ii
+real q
 
-do ii = 0,9
-    write(*,*) bisection(ii*1.0, ii*1.0 + 1.0, 1.0)
-end do
+if (option==0) then
+    do ii = 0,9
+        write(*,*) bisection(ii*1.0, ii*1.0 + 1.0, sep)
+    end do
+else
+    do while (q < 5.0)
+        write(*,*) bisection(q*1.0, q*1.0 + 0.5, sep)
+        q = q + 0.5
+    end do
+end if
 
 contains
 
@@ -69,14 +78,14 @@ function check_boundary(E, sep); intent(in) E, sep
 end function check_boundary
 
 ! potential
-pure function V(x, option); intent(in) x, option
+function V(x, option); intent(in) x, option
     real V, x
     integer option
 
     if (option==0) then
         V = 0.5*(x*x)
     else
-        V = 0.25*(x**4.0)
+        V = 0.25*(x**4)
     end if
 
 end function V
