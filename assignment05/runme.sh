@@ -16,10 +16,10 @@ echo "Has output:"
 cat q1_output_odd.dat
 echo "Plotting..."
 gnuplot --persist << EOF
-set title "Odd Wavefunction (+ x-axis) Harmonic Oscillator"
+set title "Even Wavefunction (+ x-axis) Harmonic Oscillator"
 set xrange [0:5]
 set terminal pdf
-set output "q1_odd_function.pdf"
+set output "q1_even_function.pdf"
 plot "fort.1" u 1:2 w l
 EOF
 
@@ -40,10 +40,10 @@ echo "Has output:"
 cat q1_output_even.dat
 echo "Plotting..."
 gnuplot --persist << EOF
-set title "Even Wavefunction (+ x-axis) Harmonic Oscillator"
+set title "Odd Wavefunction (+ x-axis) Harmonic Oscillator"
 set xrange [0:5]
 set terminal pdf
-set output "q1_even_function.pdf"
+set output "q1_odd_function.pdf"
 plot "fort.2" u 1:2 w l
 EOF
 
@@ -65,7 +65,7 @@ fbuild -o p2 problem2.f90
 echo "Running..."
 ./p2 > q2_output.dat
 echo "First 10 Energy Eigenvalues of Harmonic Oscillator are:"
-cat q2_output.dat
+cat fort.3 
 echo "Finished..."
 echo "====== Problem 2 END ======"
 
@@ -81,7 +81,7 @@ fbuild -o p3 problem2.f90
 echo "Running..."
 ./p3 > q3_output.dat
 echo "First 10 Energy Eigenvalues of Quartic Oscillator are:"
-cat q3_output.dat
+cat fort.4
 
 echo "Cleaning up..."
 
@@ -97,7 +97,7 @@ fbuild -o p4 problem4.f90
 echo "Running..."
 ./p4 > q4_output.dat
 echo "First 10 Energy Eigenvalues of Harmonic Oscillator are:"
-cat fort.3
+cat fort.11
 echo "Plotting the energy eigenvectors..."
 gnuplot --persist << EOF
 reset
@@ -127,15 +127,15 @@ echo "====== Problem 4 END ======"
 
 echo "====== Problem 5 BEGIN ======"
 echo "Compiling..."
-sed -ie "11s/option = 0/option = 1/" problem4.f90
-sed -ie "28s/file_out_index = 3/file_out_index = 4/" problem4.f90
+sed -ie "8s/option = 0/option = 1/" problem4.f90
+sed -ie "31s/file_out_index = 11/file_out_index = 12/" problem4.f90
 rm *.f90e
 
 fbuild -o p5 problem4.f90
 echo "Running..."
 ./p5 > q5_output.dat
 echo "First 10 Energy Eigenvalues of Quartic Oscillator are:"
-cat fort.4
+cat fort.12
 echo "Plotting the energy eigenvectors..."
 gnuplot --persist << EOF
 reset
@@ -163,14 +163,14 @@ EOF
 
 echo "Cleaning up..."
 
-sed -ie "11s/option = 1/option = 0/" problem4.f90
-sed -ie "28s/file_out_index = 4/file_out_index = 3/" problem4.f90
+sed -ie "8s/option = 1/option = 0/" problem4.f90
+sed -ie "31s/file_out_index = 12/file_out_index = 11/" problem4.f90
 rm *.f90e
 
 echo "Finished..."
 echo "====== Problem 5 END ======"
 
 echo "Removing extraneous files FROM EXISTENCE..."
-rm p? p1_? *.dat fort.?
+rm p? p1_? *.dat fort.*
 
 echo "Done. Have a nice day!"

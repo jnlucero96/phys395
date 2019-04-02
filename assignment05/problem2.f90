@@ -13,68 +13,91 @@ integer, parameter :: option = 0
 real, parameter :: sep = 1.0
 
 ! declare initial guess for the wave function
-real, dimension(3) :: init=[0.0, 1.0, 0.0]
+real, dimension(3) :: init
+
+real, dimension(10) :: lower_bounds
+real, dimension(10) :: upper_bounds
 
 ! declare iterator variables
-integer ii
-real q
+integer ii 
+real ret
+
+! because anharmonic oscillator has weird bounds
+lower_bounds=[0.35,1.45,2.90,4.50,6.40,8.30,10.48,12.60,14.90,17.40]
+upper_bounds=[0.50,1.52,3.10,4.70,6.50,8.50,10.60,12.80,15.10,17.60]
 
 if (option==0) then
     do ii = 0,9
-        write(*,*) bisection(ii*1.0, ii*1.0 + 1.0, sep)
+        if (mod(ii, 2)==0) then
+            init=[0.0, 1.0, 0.0]
+        else
+            init=[0.0, 0.0, 1.0]
+        end if
+        call bisection(ii*1.0, ii*1.0 + 1.0, ret)
+        write(3,*) ret
     end do
-else
-    do while (q < 5.0)
-        write(*,*) bisection(q*1.0, q*1.0 + 0.5, sep)
-        q = q + 0.5
+else 
+    do ii=1,10
+        if (mod((ii-1), 2)==0) then
+            init=[0.0, 1.0, 0.0]
+        else
+            init=[0.0, 0.0, 1.0]
+        end if
+        call bisection(lower_bounds(ii), upper_bounds(ii), ret)
+        write(4,*) ret
     end do
 end if
 
+
 contains
 
-function bisection(a0, b0, sep); intent(in) a0, b0, sep
-    real a0, b0, sep, bisection
+subroutine bisection(a0, b0, ret); intent(in) a0, b0
+    intent(inout) ret
+    real a0, b0, sep, ret
     real a, b, c, fa, fb, fc
-    real, parameter :: eps=1e-16 ! demand double precision in solution
+    real, parameter :: eps=1e-8 ! demand double precision in solution
 
     ! initial interval
-    a = a0; fa = check_boundary(a, sep)
-    b = b0; fb = check_boundary(b, sep)
+    a = a0; fa = check_boundary(a)
+    b = b0; fb = check_boundary(b)
 
     if (fa*fb > 0.0) stop "The root is not bracketed, bailing out..."
 
     ! bisect the interval
     do while (abs(b-a) > eps*1.0)
-        c = (a+b)/2.0; fc = check_boundary(c, sep); if (fc == 0.0) exit
+        c = (a+b)/2.0; fc = check_boundary(c); if (abs(fc) < eps*1.0) exit
 
         ! Ridder's variation on the basic method
-        c = c + (c-a)*sign(1.0,fa-fb)*fc/sqrt(fc*fc-fa*fb); fc = check_boundary(c, sep)
+        c = c + (c-a)*sign(1.0,fa-fb)*fc/sqrt(fc*fc-fa*fb); fc = check_boundary(c)
 
-        if (fc == 0.0) exit
+        if (abs(fc) < eps*1.0) exit
         if (fa*fc < 0.0) then; b = c; fb = fc; end if
         if (fc*fb < 0.0) then; a = c; fa = fc; end if
     end do
 
-    bisection = c
-end function bisection
+    ret = c
+end subroutine bisection
 
 ! check the values of the wavefunction at the boundaries
-function check_boundary(E, sep); intent(in) E, sep
-    real sep, E, check_boundary
-    real y(3), y_neg(3)
-    integer l
+function check_boundary(E); intent(in) E
+    real E, check_boundary
+    real y(3)
+    integer l, n
+    real, parameter :: dt=1e-3
 
     y = init
-    y_neg = -1*init
+
+    n = floor(5.0/dt)
 
     ! for a given energy...
-    do l=1,2**10
-        call gl10(y, dx, 1.0, E) ! evolve to positive x
-        call gl10(y_neg, dx, -1.0, E) ! evolve to negative x
+    do l=1,n
+        call gl10(y, dt, 1.0, E) ! evolve to positive x
     end do
 
+    print *, E, y(2)
+
     ! check the boundary values of the two
-    check_boundary = (y(2) + sep*y_neg(2)) - tar
+    check_boundary = y(2) - tar
 end function check_boundary
 
 ! potential
@@ -138,29 +161,5 @@ subroutine gl10(y, dt, neg, E)
         ! update the solution
         y = y + matmul(g,b)*dt
 end subroutine gl10
-
-! integrate equations of motion for a given amount of time
-function integrate(E, t, dt, neg)
-    intent(in) t, dt, neg, E
-    real t, dt, integrate, neg, E
-    real u(3); integer i, n
-
-    ! vector holds [x, psi, psi prime] initial guess
-    u = [0.0, 1.0, 0.0]; ! even solutions
-    ! u = [0.0, 0.0, 1.0]; ! odd solutions
-
-    ! number of time steps needed
-    n = floor(t/dt)
-
-    do i = 1,n
-        call gl10(u, dt, neg, E); if (abs(u(2)) > 100.0) exit
-        ! if (mod(i, 100) == 0) write(*,*) u(1), u(2), u(3)
-    end do
-
-    call gl10(u,t-n*dt, neg, E)
-
-    ! return wavefunction at time t
-    integrate = u(2)
-end function integrate
 
 end program problem2

@@ -3,7 +3,7 @@ implicit none
 
 ! iterations for bisection cycle
 integer, parameter :: iterations = 1000
-real, parameter :: E = 0.6
+real, parameter :: E = 0.5
 real, parameter :: tar = 0.0
 ! direction to shoot
 real, parameter :: neg = 1.0
@@ -17,7 +17,7 @@ psiPrime_init = 0.0
 file_index_to_write = 1
 
 ! write out the postive trajectory
-fa = integrate(file_index_to_write, psi_init, psiPrime_init, 3.0, 1e-3, neg)
+fa = integrate(file_index_to_write, psi_init, psiPrime_init, 5.0, 1e-3, neg)
 
 contains
 

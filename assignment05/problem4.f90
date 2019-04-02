@@ -4,11 +4,11 @@ implicit none
 ! order of the spectral scheme
 integer, parameter :: n = 200
 
-! scale of compactification
-real, parameter :: ell = 1.0
-
 ! which potential to use. 0 is quadratic, 1 is quartic.
 integer, parameter :: option = 0
+
+! scale of compactification
+real, parameter :: ell = 1.0
 
 ! this is what you think it is...
 real, parameter :: pi = 3.1415926535897932384626433832795028842Q0
@@ -25,7 +25,10 @@ real, dimension(n,n) :: eig_vecs_out
 integer i, ii, jj
 integer file_out_index
 
-file_out_index = 3
+eig_vals_out = 0.0
+eig_vecs_out = 0.0
+
+file_out_index = 11
 
 ! initialize spectral operators
 call initg(); call initl()
