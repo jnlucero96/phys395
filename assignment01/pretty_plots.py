@@ -108,10 +108,10 @@ def problem3():
 def problem5():
     # evaluate the true derivative function at a resolution much higher than
     # either of the estimates
-    x = linspace(-1.00, 1.00, 1000)
-    x_D = linspace(-0.99, 0.99, 1000)
+    x = prep_cheb_line(arange(1,1001), 1000)
+    x_D = prep_cheb_line(arange(1,1001), 1000)
     true_function = 1.0/(1+10*x*x)
-    true_D_function = -(20.0*x)/((1+10*x*x)**2)
+    true_D_function = -(20.0*x_D)/((1+10*x_D*x_D)**2)
 
     # unload the data from the files and put them into arrays
     x_sample_n10, gaussj_n10, lsolve_n10, gaussj_d_n10, lsolve_d_n10 = loadtxt("problem5_10n.dat", unpack=True)

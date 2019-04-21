@@ -33,7 +33,7 @@ integer :: jj
 integer :: index1, iteration
 integer :: status
 
-status = 0
+status=0
 index1=1
 
 ! read in data from std out
@@ -74,7 +74,8 @@ do
     chi_sq_old = chi_sq(n, m, y, c, basis_matrix)
     chi_sq_new = chi_sq(n, m, y, c + delta, basis_matrix)
 
-    write (*,*) "Iteration:", iteration, " Chi-Square(t):",chi_sq_old,"Chi_square(t+1):",chi_sq_new
+    write (*,*) "Iteration:", iteration, " Chi-Square(t):",chi_sq_old,"Chi_square(t+1):",chi_sq_new 
+    write (*,*) delta(1), delta(2), delta(3), delta(4)
 
     criterion = chi_sq_new - chi_sq_old
 

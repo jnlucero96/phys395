@@ -14,6 +14,8 @@ real, parameter :: sep = 1.0
 
 ! declare initial guess for the wave function
 real, dimension(3) :: init
+real, dimension(3) :: traj
+real, dimension(3) :: traj_init
 
 real, dimension(10) :: lower_bounds
 real, dimension(10) :: upper_bounds
@@ -35,6 +37,11 @@ if (option==0) then
         end if
         call bisection(ii*1.0, ii*1.0 + 1.0, ret)
         write(3,*) ret
+
+        call integrate(21, ret) 
+
+        write(21,*) ""; write(21,*) ""
+
     end do
 else 
     do ii=1,10
@@ -45,9 +52,13 @@ else
         end if
         call bisection(lower_bounds(ii), upper_bounds(ii), ret)
         write(4,*) ret
+
+        call integrate(22, ret) 
+
+        write(22,*) ""; write(22,*) ""
+
     end do
 end if
-
 
 contains
 
@@ -78,23 +89,41 @@ subroutine bisection(a0, b0, ret); intent(in) a0, b0
     ret = c
 end subroutine bisection
 
+subroutine integrate(file_write, E); intent(in) E
+    real E, traj(3), traj_neg(3)
+    integer ii, n, file_write
+    real, parameter :: dt=1e-3
+
+    traj = init; traj_neg = -init
+
+    n = floor(5.0/dt)
+
+    do ii=1,n
+        call gl10(traj, dt, 1.0, E)
+        call gl10(traj_neg, dt, -1.0, E)
+        if (mod(ii, 10)==0) write(file_write,*) traj(1), traj(2), traj_neg(1), traj_neg(2)
+    end do
+
+end subroutine integrate
+
 ! check the values of the wavefunction at the boundaries
 function check_boundary(E); intent(in) E
     real E, check_boundary
-    real y(3)
+    real y(3), y_neg(3)
     integer l, n
     real, parameter :: dt=1e-3
 
-    y = init
+    y = init; y_neg = init
 
     n = floor(5.0/dt)
 
     ! for a given energy...
     do l=1,n
         call gl10(y, dt, 1.0, E) ! evolve to positive x
+        call gl10(y_neg, dt, -1.0, E) ! evolve to positive x
     end do
 
-    print *, E, y(2)
+    ! write(*,*) E 
 
     ! check the boundary values of the two
     check_boundary = y(2) - tar

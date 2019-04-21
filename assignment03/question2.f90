@@ -7,24 +7,38 @@ real :: bx_init
 real :: cx_init
 
 ! declare tolerance variable
-real :: epsilon
+real, parameter :: epsilon = 1e-4
 
 ! declare variable that holds the argmin of the function
 real :: xmin
 ! declare variable that holds the minimum value of the function
-real :: minval
+real :: minval1, minval2
 
 ! initial points bracket the left
 ax_init = -10.0
-bx_init = 0.0
-cx_init = 10.0
+bx_init = -5.0
+cx_init = 0.0
+xmin = 0.0
 
-epsilon = 0.0001 ! define the tolerance
 
-minval = gss(ax_init, bx_init, cx_init, epsilon, xmin)
+minval1 = gss(ax_init, bx_init, cx_init, epsilon, xmin)
 
 print *, "Consider the window defined by [", ax_init, bx_init, cx_init, "]"
-print *, "Minimum value:", minval
+print *, "Minimum value:", minval1
+print *, "Argmin value:", xmin
+print *, "Tolerance:", epsilon
+
+! re-initialize points that bracket the right
+ax_init = 0.0
+bx_init = 5.0
+cx_init = 10.0
+
+xmin = 0.0
+
+minval2 = gss(ax_init, bx_init, cx_init, epsilon, xmin)
+
+print *, "Consider the window defined by [", ax_init, bx_init, cx_init, "]"
+print *, "Minimum value:", minval2
 print *, "Argmin value:", xmin
 print *, "Tolerance:", epsilon
 
@@ -72,7 +86,7 @@ function gss(ax, bx, cx, tol, xmin)
 
         ! one possible outcome
         if (f2 < f1) then
-            ! shift the bounds accordingly 
+            ! shift the bounds accordingly
             call shft3(x0, x1, x2, gr*x2+C*x3)
             ! function evaluation
             call shft2(f1,f2,f(x2))
